@@ -1,7 +1,7 @@
 {
-	"name": "acme/demo",
+	"name": "wardormeur/anoncache",
 	"type": "phpbb-extension",
-	"description": "Acme Demo Extension for phpBB 3.1",
+	"description": "Apache static pages",
 	"homepage": "https://github.com/phpbb/phpbb-ext-acme-demo",
 	"version": "0.1.0",
 	"time": "2013-11-05",
@@ -20,9 +20,9 @@
 		"phpbb/epv": "dev-master"
 	},
 	"extra": {
-		"display-name": "Acme Demo Extension",
+		"display-name": "Apache static pages",
 		"soft-require": {
-			"phpbb/phpbb": ">=3.1.0-RC2,<3.2@dev"
+			"phpbb/phpbb": ">=3.1.0-RC2"
 		}
 	}
 }

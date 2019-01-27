@@ -7,13 +7,13 @@
 *
 */
 
-namespace acme\demo\tests\dbal;
+namespace wardormeur\anoncache\tests\dbal;
 
 class simple_test extends \phpbb_database_test_case
 {
 	static protected function setup_extensions()
 	{
-		return array('acme/demo');
+		return array('wardormeur/anoncache');
 	}
 
 	/** @var \phpbb\db\driver\driver_interface */

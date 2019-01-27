@@ -7,19 +7,19 @@
 *
 */
 
-namespace acme\demo\acp;
+namespace wardormeur\anoncache\acp;
 
 class main_info
 {
 	function module()
 	{
 		return array(
-			'filename'	=> '\acme\demo\acp\main_module',
+			'filename'	=> '\wardormeur\anoncache\acp\main_module',
 			'title'		=> 'ACP_DEMO_TITLE',
 			'modes'		=> array(
 				'settings'	=> array(
 					'title'	=> 'ACP_DEMO',
-					'auth'	=> 'ext_acme/demo && acl_a_board',
+					'auth'	=> 'ext_wardormeur/anoncache && acl_a_board',
 					'cat'	=> array('ACP_DEMO_TITLE')
 				),
 			),

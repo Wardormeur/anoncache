@@ -7,7 +7,7 @@
 *
 */
 
-namespace acme\demo\tests\controller;
+namespace wardormeur\anoncache\tests\controller;
 
 class main_test extends \phpbb_test_case
 {
@@ -45,7 +45,7 @@ class main_test extends \phpbb_test_case
 			});
 
 		// Instantiate the acme demo controller
-		$controller = new \acme\demo\controller\main(
+		$controller = new \wardormeur\anoncache\controller\main(
 			new \phpbb\config\config(array()),
 			$controller_helper,
 			$template,

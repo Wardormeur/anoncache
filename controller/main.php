@@ -7,7 +7,7 @@
 *
 */
 
-namespace acme\demo\controller;
+namespace wardormeur\anoncache\controller;
 
 class main
 {
