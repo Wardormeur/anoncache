@@ -5,7 +5,7 @@ The goal of this extension is to fasten the loading of pages for anonymous users
 ## Drawbacks
 
  - The viewer counter will be wrong: use a proper analytics tool instead and disable it from your theme.
- - Previous anonymous users will still use the php version has long as their cookie is valid
+ - Previous anonymous users will still use the php version as long as their cookie is valid
  - Writing/Answering to a post is slightly slower (needs to write to disk)
 
 ## Installation
