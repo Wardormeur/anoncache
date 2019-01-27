@@ -33,3 +33,6 @@ Gain is roughly 100% faster on not-logged in users
   - Ensure that reusing a sessionId doesn't introduce a security issue
   - Reuse the Anonymous user' session_id when generating the static file(s)
   - Make it work for viewtopic as well
+  - Handle deletion of topic/post
+  - Handle merging/moving of topic/posts 
+  - Handle approval of topic/post
