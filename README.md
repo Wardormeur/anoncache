@@ -24,10 +24,12 @@ Namely, you must apply before the handling of the app.php the content of `.htacc
 ## Comparison
 
 Tested locally with Apache's ab, running
-`ab -n 1000 -c 100 -l http://localhost/` (with)[ab-w-plugin.output] and (without)[ab-wo-plugin.output] the plugin
+`ab -n 1000 -c 100 -l http://localhost/` [with](ab-w-plugin.output) and [without](ab-wo-plugin.output) the plugin
+
 Gain is roughly 100% faster on not-logged in users
 
 ## To be done
 
+  - Ensure that reusing a sessionId doesn't introduce a security issue
   - Reuse the Anonymous user' session_id when generating the static file(s)
   - Make it work for viewtopic as well
