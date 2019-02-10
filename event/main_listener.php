@@ -73,12 +73,11 @@ class main_listener implements EventSubscriberInterface
     $promise = $client->sendAsync($request)->then(function ($response) {
       $fileSystem = new Filesystem();
       try {
-        $fileSystem->dumpFile(realpath($phpbb_root_path).'/index.html', $response->getBody());
+        $fileSystem->dumpFile($phpbb_root_path.'cache/anoncache/index.html', $response->getBody());
       } catch (IOExceptionInterface $exception) {
         echo "An error occurred while creating your directory at ".$exception->getPath();
       }
     });
-
     $promise->wait();
   }
 }
