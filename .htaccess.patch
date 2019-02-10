@@ -3,3 +3,13 @@ RewriteCond %{HTTP_COOKIE} !phpbb3_.+=([^;]+)
 RewriteCond cache/anoncache/index.html -f
 RewriteCond %{HTTP_USER_AGENT} !GuzzleHttp
 RewriteRule .* /cache/anoncache/index.html [L,R,NC,END]
+
+RewriteCond %{REQUEST_URI} ^/(viewforum\.php)?$
+RewriteCond %{HTTP_COOKIE} !phpbb3_.+=([^;]+)
+RewriteCond %{QUERY_STRING} f=(\d)+ 
+RewriteCond %{QUERY_STRING} !t
+RewriteCond cache/anoncache/viewforum/%1.html -f
+RewriteCond %{HTTP_USER_AGENT} !GuzzleHttp
+RewriteRule .* /cache/anoncache/viewforum/%1.html [L,R,NC,END]
+
+

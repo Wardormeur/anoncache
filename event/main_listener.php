@@ -36,16 +36,23 @@ class main_listener implements EventSubscriberInterface
 	/* @var \phpbb\template\template */
 	protected $template;
 
+	/* @var \phpbb\auth\auth*/
+	protected $auth;
+
 	/**
 	* Constructor
 	*
 	* @param \phpbb\controller\helper	$helper		Controller helper object
 	* @param \phpbb\template\template	$template	Template object
+	* @param \phpbb\auth\auth auth object
 	*/
-	public function __construct(\phpbb\controller\helper $helper, \phpbb\template\template $template)
+	public function __construct(\phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\auth\auth $auth)
 	{
 		$this->helper = $helper;
 		$this->template = $template;
+		$this->auth = $auth;
+    $userdata = $this->auth->obtain_user_data(1);
+    // $this->auth->acl($userdata);
 	}
 
 	public function load_language_on_setup($event)
@@ -68,16 +75,34 @@ class main_listener implements EventSubscriberInterface
   public function refresh_static($event)
   {
     global $phpbb_root_path;
+    error_log(print_r($event['data']['forum_id'], true));
+    $forumIndex = $event['data']['forum_id'];
+    // TODO : function refreshPath(path) for index, forum and topic
+    // or fn(forum, topic) and buildUrl
     $client = new \GuzzleHttp\Client();
     $request = new \GuzzleHttp\Psr7\Request('GET', 'localhost:80/index.php');
-    $promise = $client->sendAsync($request)->then(function ($response) {
+    $promises = []; 
+    $promises[] = $client->sendAsync($request)->then(function ($response) {
       $fileSystem = new Filesystem();
       try {
-        $fileSystem->dumpFile($phpbb_root_path.'cache/anoncache/index.html', $response->getBody());
+        return $fileSystem->dumpFile($phpbb_root_path.'cache/anoncache/index.html', $response->getBody());
       } catch (IOExceptionInterface $exception) {
         echo "An error occurred while creating your directory at ".$exception->getPath();
       }
     });
-    $promise->wait();
+    // TODO : update parent forums views
+    // Update corresponding viewforum
+    $promises[] = $client->sendAsync($request)->then(function ($response) use ($forumIndex) {
+      $fileSystem = new Filesystem();
+      try {
+        return $fileSystem->dumpFile($phpbb_root_path.'cache/anoncache/viewforum/'.$forumIndex.'.html', $response->getBody());
+      } catch (IOExceptionInterface $exception) {
+        echo "An error occurred while creating your directory at ".$exception->getPath();
+      }
+    });
+    \GuzzleHttp\Promise\all($promises)->then(function ($responses) {
+      error_log(print_r($responses, true));
+    })->wait();
+    //$promise->wait();
   }
 }
