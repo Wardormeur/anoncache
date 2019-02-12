@@ -33,6 +33,7 @@ Gain is roughly 100% faster on not-logged in users
   - Ensure that reusing a sessionId doesn't introduce a security issue
   - ~Reuse the Anonymous user' session_id when generating the static file(s)~
   - Use an event-loop to make the http call non-blocking
+  - Do not disclose private forums by not generating the file if the anonymous user has no access to it
   - Have a test mode to identify static files (HTTP headers or adding a meta header ?) 
   - Make it work for viewtopic as well
   - Handle deletion of topic/post
