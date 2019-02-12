@@ -16,6 +16,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
+use \GuzzleHttp\Psr7;
+use \GuzzleHttp\Psr7\Request;
+use \GuzzleHttp\Psr7\Uri;
+use \GuzzleHttp\Promise;
+use \GuzzleHttp\Client;
 /**
 * Event listener
 */
@@ -39,20 +44,30 @@ class main_listener implements EventSubscriberInterface
 	/* @var \phpbb\auth\auth*/
 	protected $auth;
 
+	/* @var \phpbb\driver\factory*/
+	protected $db;
+
+	/* @var sessionId*/
+	protected $sessionId;
+
 	/**
 	* Constructor
 	*
 	* @param \phpbb\controller\helper	$helper		Controller helper object
 	* @param \phpbb\template\template	$template	Template object
 	* @param \phpbb\auth\auth auth object
+	* @param \phpbb\db\driver\factory dbal.conn object
 	*/
-	public function __construct(\phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\auth\auth $auth)
+	public function __construct(\phpbb\controller\helper $helper, \phpbb\template\template $template, \phpbb\auth\auth $auth, \phpbb\db\driver\factory $db)
 	{
 		$this->helper = $helper;
 		$this->template = $template;
-		$this->auth = $auth;
-    $userdata = $this->auth->obtain_user_data(1);
+    $this->auth = $auth;
+    $this->db = $db;
+    // $userdata = $this->auth->obtain_user_data(1);
     // $this->auth->acl($userdata);
+    $session_rows = $this->db->sql_query('SELECT session_id FROM ' . SESSIONS_TABLE . ' WHERE session_user_id = 1 LIMIT 1');
+    $this->sessionId = $session_rows->fetch_assoc()['session_id'];
 	}
 
 	public function load_language_on_setup($event)
@@ -79,10 +94,11 @@ class main_listener implements EventSubscriberInterface
     $forumIndex = $event['data']['forum_id'];
     // TODO : function refreshPath(path) for index, forum and topic
     // or fn(forum, topic) and buildUrl
-    $client = new \GuzzleHttp\Client();
-    $request = new \GuzzleHttp\Psr7\Request('GET', 'localhost:80/index.php');
+    $client = new Client();
+    $indexUri = (new Uri('localhost:80/index.php'))->withQuery(Psr7\build_query(['sid' => $this->sessionId]));
+    $requestIndex = new Request('GET', $indexUri);
     $promises = []; 
-    $promises[] = $client->sendAsync($request)->then(function ($response) {
+    $promises[] = $client->sendAsync($requestIndex)->then(function ($response) {
       $fileSystem = new Filesystem();
       try {
         return $fileSystem->dumpFile($phpbb_root_path.'cache/anoncache/index.html', $response->getBody());
@@ -92,7 +108,9 @@ class main_listener implements EventSubscriberInterface
     });
     // TODO : update parent forums views
     // Update corresponding viewforum
-    $promises[] = $client->sendAsync($request)->then(function ($response) use ($forumIndex) {
+    $forumUri = (new Uri('localhost:80/viewforum.php'))->withQuery(Psr7\build_query(['f' => $forumIndex, 'sid' => $this->sessionId]));
+    $requestForum = new Request('GET', $forumUri);
+    $promises[] = $client->sendAsync($requestForum)->then(function ($response) use ($forumIndex) {
       $fileSystem = new Filesystem();
       try {
         return $fileSystem->dumpFile($phpbb_root_path.'cache/anoncache/viewforum/'.$forumIndex.'.html', $response->getBody());
@@ -100,9 +118,8 @@ class main_listener implements EventSubscriberInterface
         echo "An error occurred while creating your directory at ".$exception->getPath();
       }
     });
-    \GuzzleHttp\Promise\all($promises)->then(function ($responses) {
+    Promise\all($promises)->then(function ($responses) {
       error_log(print_r($responses, true));
     })->wait();
-    //$promise->wait();
   }
 }

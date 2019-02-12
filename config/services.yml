@@ -12,5 +12,6 @@ services:
             - '@controller.helper'
             - '@template'
             - '@auth'
+            - '@dbal.conn'
         tags:
             - { name: event.listener }
