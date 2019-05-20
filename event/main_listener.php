@@ -68,6 +68,8 @@ class main_listener implements EventSubscriberInterface
     // $this->auth->acl($userdata);
     $session_rows = $this->db->sql_query('SELECT session_id FROM ' . SESSIONS_TABLE . ' WHERE session_user_id = 1 LIMIT 1');
     $this->sessionId = $session_rows->fetch_assoc()['session_id'];
+    error_log('Extension constructor');
+    error_log($this->sessionId);
 	}
 
 	public function load_language_on_setup($event)
@@ -91,6 +93,7 @@ class main_listener implements EventSubscriberInterface
   {
     global $phpbb_root_path;
     error_log(print_r($event['data']['forum_id'], true));
+    error_log('File refresh');
     $forumIndex = $event['data']['forum_id'];
     // TODO : function refreshPath(path) for index, forum and topic
     // or fn(forum, topic) and buildUrl

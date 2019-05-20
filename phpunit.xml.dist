@@ -10,14 +10,14 @@
          stopOnFailure="false"
          syntaxCheck="false"
          verbose="true"
-         bootstrap="../../../../tests/bootstrap.php"
+         bootstrap="/var/www/html/tests/bootstrap.php"
 >
 	<testsuites>
 		<testsuite name="Extension Test Suite">
 			<directory suffix="_test.php">./tests</directory>
 			<exclude>./tests/functional</exclude>
 		</testsuite>
-		<testsuite name="Extension Functional Tests">
+		<testsuite name="functional">
 			<directory suffix="_test.php" phpVersion="5.3.19" phpVersionOperator=">=">./tests/functional/</directory>
 		</testsuite>
 	</testsuites>
